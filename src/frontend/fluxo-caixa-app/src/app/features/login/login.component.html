@@ -1,0 +1,32 @@
+<div class="login-container">
+  <div class="login-card">
+    <div class="logo">
+      <h1>Fluxo de Caixa</h1>
+      <p>Gerenciamento Financeiro</p>
+    </div>
+
+    <div class="google-signin">
+      <div id="google-signin-btn"></div>
+    </div>
+
+    <div class="divider">
+      <span>ou</span>
+    </div>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="username">Usuario</label>
+        <input id="username" type="text" formControlName="username" placeholder="admin">
+      </div>
+      <div class="form-group">
+        <label for="password">Senha</label>
+        <input id="password" type="password" formControlName="password" placeholder="admin123">
+      </div>
+      <button type="submit" class="btn-submit" [disabled]="loginForm.invalid || isLoading">
+        {{ isLoading ? 'Entrando...' : 'Entrar' }}
+      </button>
+    </form>
+
+    <p class="hint">Demo: usuario "admin", senha "admin123"</p>
+  </div>
+</div>

@@ -1,0 +1,50 @@
+<div class="lancamentos-list">
+  <div class="header">
+    <h2>Lancamentos</h2>
+    <a routerLink="/lancamentos/novo" class="btn btn-success">Novo Lancamento</a>
+  </div>
+
+  <div class="filters">
+    <div class="filter-group">
+      <label>Data Inicio</label>
+      <input type="date" [(ngModel)]="dataInicio" (change)="filterByDate()">
+    </div>
+    <div class="filter-group">
+      <label>Data Fim</label>
+      <input type="date" [(ngModel)]="dataFim" (change)="filterByDate()">
+    </div>
+    <button class="btn btn-outline" (click)="clearFilter()">Limpar</button>
+  </div>
+
+  <div class="loading" *ngIf="isLoading">Carregando...</div>
+
+  <div class="table-container" *ngIf="!isLoading">
+    <table *ngIf="filteredLancamentos.length > 0">
+      <thead>
+        <tr>
+          <th>Data</th>
+          <th>Descricao</th>
+          <th>Tipo</th>
+          <th>Valor</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let lancamento of filteredLancamentos">
+          <td>{{ lancamento.dataLancamento | date:'dd/MM/yyyy' }}</td>
+          <td>{{ lancamento.descricao }}</td>
+          <td>
+            <span class="badge" [ngClass]="lancamento.tipo === TipoLancamento.Credito ? 'badge-success' : 'badge-danger'">
+              {{ lancamento.tipo === TipoLancamento.Credito ? 'Credito' : 'Debito' }}
+            </span>
+          </td>
+          <td [ngClass]="lancamento.tipo === TipoLancamento.Credito ? 'text-success' : 'text-danger'">
+            R$ {{ lancamento.valor | number:'1.2-2' }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="empty" *ngIf="filteredLancamentos.length === 0">
+      Nenhum lancamento encontrado.
+    </div>
+  </div>
+</div>

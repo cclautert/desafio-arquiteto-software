@@ -1,0 +1,37 @@
+<div class="consolidado">
+  <h2>Consolidado Diario</h2>
+
+  <div class="search-bar">
+    <div class="form-group">
+      <label for="data">Selecione a Data</label>
+      <input id="data" type="date" [(ngModel)]="dataSelecionada">
+    </div>
+    <button class="btn btn-primary" (click)="buscar()" [disabled]="!dataSelecionada || isLoading">
+      {{ isLoading ? 'Buscando...' : 'Buscar' }}
+    </button>
+  </div>
+
+  <div class="alert alert-error" *ngIf="errorMessage">{{ errorMessage }}</div>
+
+  <div class="consolidado-card" *ngIf="consolidado">
+    <div class="consolidado-header">
+      <h3>Consolidado - {{ consolidado.data | date:'dd/MM/yyyy' }}</h3>
+    </div>
+    <div class="consolidado-body">
+      <div class="consolidado-item">
+        <span class="label">Total Creditos</span>
+        <span class="value text-success">R$ {{ consolidado.totalCreditos | number:'1.2-2' }}</span>
+      </div>
+      <div class="consolidado-item">
+        <span class="label">Total Debitos</span>
+        <span class="value text-danger">R$ {{ consolidado.totalDebitos | number:'1.2-2' }}</span>
+      </div>
+      <div class="consolidado-item saldo">
+        <span class="label">Saldo</span>
+        <span class="value" [ngClass]="consolidado.saldo >= 0 ? 'text-success' : 'text-danger'">
+          R$ {{ consolidado.saldo | number:'1.2-2' }}
+        </span>
+      </div>
+    </div>
+  </div>
+</div>

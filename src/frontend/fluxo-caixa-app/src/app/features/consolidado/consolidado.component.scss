@@ -1,0 +1,133 @@
+.consolidado {
+  h2 {
+    margin-bottom: 24px;
+    color: var(--text-primary);
+  }
+}
+
+.search-bar {
+  display: flex;
+  gap: 16px;
+  align-items: flex-end;
+  margin-bottom: 24px;
+  background: var(--card-bg);
+  padding: 16px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    label {
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+
+    input {
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-size: 0.875rem;
+    }
+  }
+}
+
+.alert {
+  padding: 12px 16px;
+  border-radius: 4px;
+  margin-bottom: 16px;
+  font-size: 0.875rem;
+
+  &-error {
+    background: #ffebee;
+    color: var(--error);
+    border: 1px solid #ffcdd2;
+  }
+}
+
+.consolidado-card {
+  background: var(--card-bg);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  max-width: 500px;
+
+  .consolidado-header {
+    background: var(--primary);
+    color: #fff;
+    padding: 16px 24px;
+
+    h3 {
+      font-size: 1.125rem;
+    }
+  }
+
+  .consolidado-body {
+    padding: 24px;
+  }
+
+  .consolidado-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &.saldo {
+      padding-top: 16px;
+      margin-top: 8px;
+      border-top: 2px solid var(--border);
+      border-bottom: none;
+    }
+
+    .label {
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+
+    .value {
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+  }
+}
+
+.text-success {
+  color: var(--success);
+}
+
+.text-danger {
+  color: var(--error);
+}
+
+.btn {
+  display: inline-block;
+  padding: 10px 20px;
+  border-radius: 4px;
+  font-weight: 500;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: background 0.2s;
+  border: none;
+
+  &-primary {
+    background: var(--primary);
+    color: #fff;
+
+    &:hover:not(:disabled) {
+      background: var(--primary-dark);
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+}

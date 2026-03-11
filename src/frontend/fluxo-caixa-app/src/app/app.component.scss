@@ -1,0 +1,58 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 24px;
+  height: 64px;
+  background-color: var(--primary);
+  color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  .nav-brand a {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #fff;
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+
+    a {
+      color: rgba(255, 255, 255, 0.85);
+      font-weight: 500;
+      padding: 8px 0;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+
+      &:hover,
+      &.active {
+        color: #fff;
+        border-bottom-color: #fff;
+      }
+    }
+
+    .btn-logout {
+      background: rgba(255, 255, 255, 0.15);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      padding: 6px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: background 0.2s;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.25);
+      }
+    }
+  }
+}
+
+.content {
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}

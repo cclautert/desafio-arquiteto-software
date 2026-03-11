@@ -1,0 +1,15 @@
+<nav class="navbar" *ngIf="authService.isLoggedIn()">
+  <div class="nav-brand">
+    <a routerLink="/dashboard">Fluxo de Caixa</a>
+  </div>
+  <div class="nav-links">
+    <a routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
+    <a routerLink="/lancamentos" routerLinkActive="active">Lancamentos</a>
+    <a routerLink="/consolidado" routerLinkActive="active">Consolidado Diario</a>
+    <button class="btn-logout" (click)="logout()">Sair</button>
+  </div>
+</nav>
+
+<main class="content">
+  <router-outlet></router-outlet>
+</main>

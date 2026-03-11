@@ -1,0 +1,30 @@
+<div class="dashboard">
+  <h2>Dashboard</h2>
+
+  <div class="loading" *ngIf="isLoading">Carregando...</div>
+
+  <div class="cards" *ngIf="!isLoading">
+    <div class="card">
+      <div class="card-label">Total de Lancamentos</div>
+      <div class="card-value">{{ totalTransactions }}</div>
+    </div>
+    <div class="card card-success">
+      <div class="card-label">Total Creditos</div>
+      <div class="card-value">R$ {{ totalCreditos | number:'1.2-2' }}</div>
+    </div>
+    <div class="card card-danger">
+      <div class="card-label">Total Debitos</div>
+      <div class="card-value">R$ {{ totalDebitos | number:'1.2-2' }}</div>
+    </div>
+    <div class="card" [ngClass]="saldo >= 0 ? 'card-success' : 'card-danger'">
+      <div class="card-label">Saldo</div>
+      <div class="card-value">R$ {{ saldo | number:'1.2-2' }}</div>
+    </div>
+  </div>
+
+  <div class="quick-links">
+    <a routerLink="/lancamentos" class="btn btn-primary">Ver Lancamentos</a>
+    <a routerLink="/lancamentos/novo" class="btn btn-success">Novo Lancamento</a>
+    <a routerLink="/consolidado" class="btn btn-primary">Consolidado Diario</a>
+  </div>
+</div>

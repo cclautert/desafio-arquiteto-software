@@ -1,0 +1,53 @@
+<div class="lancamento-form">
+  <div class="header">
+    <h2>Novo Lancamento</h2>
+    <a routerLink="/lancamentos" class="btn btn-outline">Voltar</a>
+  </div>
+
+  <div class="alert alert-success" *ngIf="successMessage">{{ successMessage }}</div>
+  <div class="alert alert-error" *ngIf="errorMessage">{{ errorMessage }}</div>
+
+  <form [formGroup]="lancamentoForm" (ngSubmit)="onSubmit()" class="form-card">
+    <div class="form-group">
+      <label for="descricao">Descricao</label>
+      <input id="descricao" type="text" formControlName="descricao" placeholder="Descricao do lancamento">
+      <div class="error" *ngIf="lancamentoForm.get('descricao')?.touched && lancamentoForm.get('descricao')?.errors?.['required']">
+        Descricao e obrigatoria.
+      </div>
+      <div class="error" *ngIf="lancamentoForm.get('descricao')?.touched && lancamentoForm.get('descricao')?.errors?.['minlength']">
+        Descricao deve ter no minimo 3 caracteres.
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="valor">Valor (R$)</label>
+      <input id="valor" type="number" formControlName="valor" placeholder="0.00" step="0.01">
+      <div class="error" *ngIf="lancamentoForm.get('valor')?.touched && lancamentoForm.get('valor')?.errors?.['required']">
+        Valor e obrigatorio.
+      </div>
+      <div class="error" *ngIf="lancamentoForm.get('valor')?.touched && lancamentoForm.get('valor')?.errors?.['min']">
+        Valor deve ser maior que zero.
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="tipo">Tipo</label>
+      <select id="tipo" formControlName="tipo">
+        <option [value]="1">Credito</option>
+        <option [value]="2">Debito</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="dataLancamento">Data</label>
+      <input id="dataLancamento" type="date" formControlName="dataLancamento">
+      <div class="error" *ngIf="lancamentoForm.get('dataLancamento')?.touched && lancamentoForm.get('dataLancamento')?.errors?.['required']">
+        Data e obrigatoria.
+      </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary" [disabled]="lancamentoForm.invalid || isLoading">
+      {{ isLoading ? 'Salvando...' : 'Salvar' }}
+    </button>
+  </form>
+</div>
