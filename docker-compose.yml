@@ -96,7 +96,7 @@ services:
       - ConnectionStrings__Redis=redis:6379
       - Kafka__BootstrapServers=kafka:9092
       - Jwt__Key=${JWT_SECRET_KEY:-SuperSecretKey_Change_In_Production_2024!}
-      - Jwt__Issuer=FluxoCaixa.API.Consolidado
+      - Jwt__Issuer=FluxoCaixa.API.Lancamentos
       - Jwt__Audience=FluxoCaixa.Clients
     depends_on:
       kafka:
