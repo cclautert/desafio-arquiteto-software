@@ -8,13 +8,89 @@ Sistema de controle de fluxo de caixa para comerciantes, permitindo o registro d
 
 ### Arquitetura
 
-Microserviços com Clean Architecture + CQRS + Event-Driven usando Apache Kafka:
+Microserviços com Clean Architecture + CQRS + Event-Driven usando Apache Kafka.
 
+#### C4 Level 1 — Contexto do Sistema
+
+Visão geral do sistema e seus atores externos.
+
+```mermaid
+C4Context
+    title Diagrama de Contexto — Fluxo de Caixa
+
+    Person(comerciante, "Comerciante", "Registra lançamentos e consulta saldo diário consolidado")
+
+    System(fluxoCaixa, "Sistema Fluxo de Caixa", "Permite controle de débitos/créditos e visualização do consolidado diário")
+
+    System_Ext(google, "Google Identity Services", "Provedor OAuth2 para autenticação de usuários")
+
+    Rel(comerciante, fluxoCaixa, "Usa", "HTTPS / Browser")
+    Rel(fluxoCaixa, google, "Autentica via", "OAuth2 / OpenID Connect")
 ```
-Frontend (Angular)
-    ↕ HTTP/REST + JWT
-API Lancamentos (port 5001) ──[Kafka]──► API Consolidado (port 5002)
-    ↕ InMemory DB               ↕ InMemory DB + Redis Cache
+
+#### C4 Level 2 — Containers
+
+Os 6 containers que compõem o sistema e suas interações.
+
+```mermaid
+C4Container
+    title Diagrama de Containers — Fluxo de Caixa
+
+    Person(comerciante, "Comerciante", "Usuário do sistema")
+
+    Container_Boundary(sistema, "Sistema Fluxo de Caixa") {
+        Container(frontend, "Frontend", "Angular 17 + NGINX", "SPA servida via NGINX na porta 4200")
+        Container(apiLanc, "API Lancamentos", ".NET 8 / ASP.NET Core", "Registra débitos e créditos (porta 5001)")
+        Container(apiCons, "API Consolidado", ".NET 8 / ASP.NET Core", "Consulta saldo diário consolidado (porta 5002)")
+        ContainerDb(dbLanc, "InMemory DB", "EF Core InMemory", "Armazena lançamentos")
+        ContainerDb(dbCons, "InMemory DB", "EF Core InMemory", "Armazena consolidados diários")
+        ContainerQueue(kafka, "Apache Kafka", "Message Broker", "Topic: lancamento-criado")
+        ContainerDb(redis, "Redis", "Cache Distribuído", "Cache-Aside com TTL de 5 min")
+    }
+
+    System_Ext(google, "Google Identity Services", "OAuth2")
+
+    Rel(comerciante, frontend, "Acessa", "HTTPS")
+    Rel(frontend, apiLanc, "Cria lançamentos", "HTTP/REST + JWT")
+    Rel(frontend, apiCons, "Consulta consolidado", "HTTP/REST + JWT")
+    Rel(apiLanc, dbLanc, "Lê/Escreve")
+    Rel(apiLanc, kafka, "Publica evento", "lancamento-criado")
+    Rel(kafka, apiCons, "Consome evento", "lancamento-criado")
+    Rel(apiCons, dbCons, "Lê/Escreve")
+    Rel(apiCons, redis, "Cache-Aside", "GET/SET com TTL")
+    Rel(frontend, google, "Login OAuth2")
+```
+
+#### C4 Level 3 — Componentes (Backend)
+
+Camadas Clean Architecture dentro de cada microserviço.
+
+```mermaid
+C4Component
+    title Diagrama de Componentes — Backend (Clean Architecture)
+
+    Container_Boundary(api, "API Lancamentos / API Consolidado") {
+
+        Component(controllers, "Controllers", "ASP.NET Core", "Endpoints REST — recebem requests HTTP e delegam para Application")
+        Component(application, "Application Layer", "MediatR + AutoMapper", "Commands, Queries, DTOs e Handlers CQRS")
+        Component(domain, "Domain Layer", "C# Classes", "Entities, Enums, Interfaces e Domain Services")
+        Component(infra, "Infrastructure Layer", "EF Core, Kafka, Redis, Polly", "Repositories, Kafka Producer/Consumer, Redis Cache, DbContext")
+        Component(ioc, "IOC", "Microsoft.Extensions.DI", "Registro de dependências — referencia todas as camadas")
+
+    }
+
+    ContainerDb(db, "InMemory DB", "EF Core InMemory")
+    ContainerQueue(kafka, "Apache Kafka", "Message Broker")
+    ContainerDb(redis, "Redis", "Cache")
+
+    Rel(controllers, application, "Envia Commands/Queries", "MediatR")
+    Rel(application, domain, "Usa entidades e interfaces")
+    Rel(infra, domain, "Implementa interfaces do Domain")
+    Rel(infra, application, "Implementa interfaces do Application")
+    Rel(controllers, ioc, "Resolve dependências")
+    Rel(infra, db, "Persiste dados", "EF Core")
+    Rel(infra, kafka, "Publica/Consome eventos", "Confluent.Kafka")
+    Rel(infra, redis, "Cache-Aside", "StackExchange.Redis")
 ```
 
 Para detalhes completos da arquitetura, consulte [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
