@@ -328,6 +328,55 @@ desafio-arquiteto-software/
 
 ---
 
+## Correções Aplicadas (Docker)
+
+### 1. Fix: 401 `invalid_token` ao criar lançamento via frontend
+
+**Problema**: Após login com `admin`/`admin123`, o frontend armazenava `"undefined"` no localStorage em vez do JWT real, causando `401 Bearer error="invalid_token"` em todas as chamadas autenticadas.
+
+**Causa raiz**: O backend retorna JSON em **camelCase** (`{ "token": "eyJ..." }`), mas o frontend esperava **PascalCase** (`response.Token`). Como JavaScript é case-sensitive, `response.Token` resultava em `undefined`.
+
+**Correção** (`src/frontend/fluxo-caixa-app/src/app/core/auth/auth.service.ts`):
+```typescript
+// Antes (incorreto)
+this.http.post<{ Token: string }>(...)
+localStorage.setItem('token', response.Token);
+
+// Depois (correto)
+this.http.post<{ token: string }>(...)
+localStorage.setItem('token', response.token);
+```
+
+### 2. Fix: NGINX reverse proxy para APIs no Docker
+
+**Problema**: No ambiente Docker, o frontend Angular fazia chamadas diretamente para `http://api-lancamentos:8080` e `http://api-consolidado:8080` (nomes de rede interna do Docker), que não são acessíveis pelo navegador do usuário.
+
+**Correção**:
+- **`environment.prod.ts`**: URLs das APIs alteradas para `''` (vazio), fazendo as chamadas serem relativas ao host do frontend.
+- **`nginx.conf`**: Adicionadas regras de proxy reverso para rotear `/api/v1/consolidado` para `api-consolidado:8080` e `/api/` para `api-lancamentos:8080`, com repasse de headers (`Host`, `X-Real-IP`, `Authorization`).
+
+### 3. Fix: `npm ci` → `npm install` no Dockerfile
+
+**Problema**: `npm ci` falhava no build Docker por ausência de `package-lock.json` atualizado.
+
+**Correção** (`src/frontend/Dockerfile`): Substituído `RUN npm ci` por `RUN npm install`.
+
+### Após aplicar correções
+
+```bash
+# Rebuild e restart do frontend
+docker-compose build --no-cache frontend
+docker-compose up -d frontend
+
+# Verificação:
+# 1. Limpar localStorage no browser (DevTools → Application → Local Storage → deletar 'token')
+# 2. Login com admin / admin123
+# 3. Verificar que o token no localStorage começa com 'eyJ' (JWT válido)
+# 4. Criar um lançamento → deve retornar 201 Created
+```
+
+---
+
 ## Pontos de Melhoria Futura
 
 1. **Banco Persistente**: Substituir InMemory por PostgreSQL com migrations reais

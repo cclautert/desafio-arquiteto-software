@@ -35,11 +35,19 @@ export class AuthService {
   }
 
   loginWithCredentials(username: string, password: string): void {
-    if (username === 'admin' && password === 'admin123') {
-      localStorage.setItem('token', 'demo-token');
-      this.isAuthenticatedSubject.next(true);
-      this.router.navigate(['/dashboard']);
-    }
+    this.http.post<{ token: string }>(`${environment.apiLancamentosUrl}/api/v1/auth/token`, {
+      username,
+      password
+    }).subscribe({
+      next: (response) => {
+        localStorage.setItem('token', response.token);
+        this.isAuthenticatedSubject.next(true);
+        this.router.navigate(['/dashboard']);
+      },
+      error: () => {
+        // credentials rejected by backend — stay on login page
+      }
+    });
   }
 
   logout(): void {

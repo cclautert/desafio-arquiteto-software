@@ -2,7 +2,7 @@
 FROM node:20-alpine AS build
 WORKDIR /app
 COPY fluxo-caixa-app/package*.json ./
-RUN npm ci
+RUN npm install
 COPY fluxo-caixa-app/ ./
 RUN npm run build -- --configuration production
 
